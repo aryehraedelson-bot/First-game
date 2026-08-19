@@ -1,0 +1,5 @@
+:root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background: #101621; color: #f8e7a1; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at top, #27354d, #101621 65%); }
+#game-shell { width: min(96vw, 1000px); }
+canvas { width: 100%; aspect-ratio: 16 / 9; display: block; border: 3px solid #d6a63a; border-radius: 14px; background: #17243a; box-shadow: 0 20px 60px #0008; image-rendering: pixelated; }
+#instructions { margin-top: 12px; padding: 12px 16px; border: 1px solid #6e5520; border-radius: 10px; background: #111923cc; line-height: 1.5; }
