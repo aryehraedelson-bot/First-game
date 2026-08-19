@@ -19,7 +19,7 @@ const context = {
   }
 };
 const gradient = { addColorStop() {} };
-const drawingContext = new Proxy({ createLinearGradient: () => gradient }, {
+const drawingContext = new Proxy({ createLinearGradient: () => gradient, measureText: text => ({ width: text.length * 8 }) }, {
   get(target, prop) {
     if (prop in target) return target[prop];
     return () => {};
@@ -67,11 +67,17 @@ moveTo(625); attackUntilDefeated(game.enemies[1]);
 assert(game.world.phase === 'sanctuary', 'Village attack did not progress after initial enemies');
 moveTo(1040); tap('e'); step(2); assert(game.sanctuaries[0].restored, 'Sanctuary interaction failed');
 assert(game.world.phase === 'explore', 'Sanctuary did not advance to exploration');
+assert(game.world.objective === 'Open the bamboo gate', 'Sanctuary did not point Kai toward the gate');
 moveTo(1285); step(2); assert(game.player.x < 1320, 'Closed gate failed to block Kai');
 tap('e'); step(2); assert(game.objects.find(o => o.type === 'gate').open, 'Gate interaction failed');
+assert(game.world.objective === 'Find the Lightning Relic', 'Open gate did not clarify the relic objective');
 moveTo(1660); tap('e'); step(2); assert(game.objects[3].rescued, 'Exploration villager interaction failed');
 moveTo(2665); step(2); assert(game.boss.active && game.world.phase === 'boss', 'Fire Beast did not spawn in arena');
 assert(!game.player.lightning, 'Lightning unlocked before boss defeat');
+game.player.x = game.boss.x + 40; game.player.invincible = 0; game.player.dodge = 0; game.boss.windup = 10; game.boss.roarHit = false;
+const hpBeforeRoar = game.player.hp; step(1); const hpAfterRoar = game.player.hp; step(4);
+assert(hpBeforeRoar - hpAfterRoar === 16, 'Fire Beast roar should land as one readable hit');
+assert(game.player.hp === hpAfterRoar, 'Fire Beast roar dealt repeated unreadable damage during one tell');
 moveTo(game.boss.x - 60); attackUntilDefeated(game.boss);
 assert(game.objects.find(o => o.type === 'relic').active, 'Lightning Relic did not appear after Fire Beast defeat');
 moveTo(3160); tap('e'); step(2); assert(game.player.lightning, 'Lightning Power did not unlock');
