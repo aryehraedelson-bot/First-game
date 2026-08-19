@@ -47,7 +47,12 @@ const attackUntilDefeated = target => {
 assert(game.world.phase === 'training', 'Fresh game did not start in training');
 hold('d'); step(24); release('d'); assert(game.player.x > 90, 'Kai movement failed');
 tap(' '); step(4); assert(game.player.y < game.world.ground - game.player.h, 'Kai jump failed');
+step(32);
+tap(' '); step(6); assert(!game.player.grounded && game.player.vy < 0, 'Kai jump buffer failed near landing');
 step(40); assert(game.player.grounded, 'Kai did not land after jump');
+game.player.grounded = false; game.player.coyote = 3; tap(' '); step(1);
+assert(game.player.vy < 0 && game.player.coyote === 0, 'Kai coyote jump grace failed');
+step(40); assert(game.player.grounded, 'Kai did not land after coyote jump');
 tap('k'); step(1);
 assert(game.player.dodge > 0, 'Kai dodge/step failed');
 assert(game.player.invincible > 0, 'Kai dodge did not grant brief invulnerability');
